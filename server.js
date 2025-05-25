@@ -267,6 +267,11 @@ app.get('/candidatos', (req, res) => {
     res.sendFile(path.join(__dirname, 'index-candidatos.html'));
 });
 
+// Servir página de pruebas
+app.get('/test', (req, res) => {
+    res.sendFile(path.join(__dirname, 'test-routes.html'));
+});
+
 // Iniciar servidor (solo en desarrollo)
 if (process.env.NODE_ENV !== 'production') {
     app.listen(PORT, () => {

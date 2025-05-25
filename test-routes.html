@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Rutas - PWA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .test-container {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-family: monospace;
+        }
+        .success { color: #4CAF50; }
+        .error { color: #f44336; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test de Rutas - PWA Sistema de Candidatos</h1>
+    
+    <div class="test-container">
+        <h2>🔗 Pruebas de Conectividad</h2>
+        <button onclick="testAPI()">🔌 Test API /api/candidatos</button>
+        <button onclick="testManifest()">📱 Test Manifest</button>
+        <button onclick="testServiceWorker()">⚙️ Test Service Worker</button>
+        <button onclick="testHome()">🏠 Test Página Principal</button>
+        <button onclick="testCandidatos()">👥 Test Página Candidatos</button>
+        
+        <div id="results"></div>
+    </div>
+
+    <div class="test-container">
+        <h2>📊 Estado del Sistema</h2>
+        <div id="status">Cargando...</div>
+    </div>
+
+    <script>
+        const results = document.getElementById('results');
+        const status = document.getElementById('status');
+
+        function addResult(test, success, message) {
+            const div = document.createElement('div');
+            div.className = `result ${success ? 'success' : 'error'}`;
+            div.innerHTML = `<strong>${test}:</strong> ${success ? '✅' : '❌'} ${message}`;
+            results.appendChild(div);
+        }
+
+        async function testAPI() {
+            try {
+                const response = await fetch('/api/candidatos');
+                const data = await response.json();
+                addResult('API Test', response.ok, `Status: ${response.status} - Candidatos: ${data.candidatos?.length || 0}`);
+            } catch (error) {
+                addResult('API Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testManifest() {
+            try {
+                const response = await fetch('/manifest.json');
+                const data = await response.json();
+                addResult('Manifest Test', response.ok, `Status: ${response.status} - App: ${data.name}`);
+            } catch (error) {
+                addResult('Manifest Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testServiceWorker() {
+            try {
+                const response = await fetch('/sw.js');
+                const text = await response.text();
+                addResult('Service Worker Test', response.ok, `Status: ${response.status} - Size: ${text.length} chars`);
+            } catch (error) {
+                addResult('Service Worker Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testHome() {
+            try {
+                const response = await fetch('/');
+                addResult('Home Test', response.ok, `Status: ${response.status} - Content-Type: ${response.headers.get('content-type')}`);
+            } catch (error) {
+                addResult('Home Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        async function testCandidatos() {
+            try {
+                const response = await fetch('/candidatos');
+                addResult('Candidatos Page Test', response.ok, `Status: ${response.status} - Content-Type: ${response.headers.get('content-type')}`);
+            } catch (error) {
+                addResult('Candidatos Page Test', false, `Error: ${error.message}`);
+            }
+        }
+
+        // Auto-test al cargar
+        window.onload = async function() {
+            status.innerHTML = '🔄 Ejecutando pruebas automáticas...';
+            
+            await testAPI();
+            await testManifest();
+            await testServiceWorker();
+            await testHome();
+            await testCandidatos();
+            
+            status.innerHTML = '✅ Pruebas completadas. Revisa los resultados arriba.';
+        };
+    </script>
+</body>
+</html>
