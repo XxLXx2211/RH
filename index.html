@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Candidatos</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Sistema integral de gestión de candidatos y recursos humanos">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Gestión Candidatos">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Favicons and Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon-32x32.svg">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon-16x16.svg">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.svg">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            color: white;
+        }
+        .redirect-container {
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 20px; }
+        p { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9; }
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+    </style>
+    <script>
+        // Redirección automática después de 3 segundos
+        setTimeout(() => {
+            window.location.href = '/index-candidatos.html';
+        }, 3000);
+
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registrado con éxito:', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW falló al registrarse:', registrationError);
+                    });
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="redirect-container">
+        <h1>👥 Sistema de Gestión de Candidatos</h1>
+        <p>Redirigiendo a la nueva versión mejorada...</p>
+        <a href="/index-candidatos.html" class="btn">🚀 Ir Ahora</a>
+    </div>
+</body>
+</html>

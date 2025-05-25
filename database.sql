@@ -1,0 +1,35 @@
+-- Base de datos para Sistema de Gestión de Candidatos
+-- SQLite Database Schema
+
+CREATE TABLE IF NOT EXISTS candidatos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombres_apellidos VARCHAR(255) NOT NULL,
+    cedula VARCHAR(20) NOT NULL UNIQUE,
+    sexo VARCHAR(10) NOT NULL,
+    edad INTEGER NOT NULL,
+    canal_recepcion VARCHAR(100) NOT NULL,
+    fuente VARCHAR(100),
+    referido VARCHAR(255),
+    tipo_contacto VARCHAR(50) NOT NULL,
+    fecha_contacto DATE NOT NULL,
+    citado_entrevista VARCHAR(10),
+    fecha_entrevista DATE,
+    entrevistador_telefonico VARCHAR(255),
+    entrevistador_presencial VARCHAR(255),
+    solicitud_empleo VARCHAR(10),
+    guia_entrevista VARCHAR(10),
+    ubicacion VARCHAR(255),
+    zona_reside VARCHAR(100),
+    direccion TEXT,
+    telefonos VARCHAR(100),
+    experiencia TEXT,
+    num_hijos INTEGER DEFAULT 0,
+    area_interes VARCHAR(255),
+    cuenta_bancaria VARCHAR(10),
+    expectativa_salarial DECIMAL(10,2),
+    estatus VARCHAR(50) NOT NULL,
+    seguridad_bancaria VARCHAR(10),
+    pds_asignado VARCHAR(255),
+    comentarios TEXT,
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+);

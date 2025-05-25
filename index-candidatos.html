@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Candidatos</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Sistema integral de gestión de candidatos y recursos humanos">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Gestión Candidatos">
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Favicons and Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon-32x32.svg">
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon-16x16.svg">
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.svg">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style-candidatos-new.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sistema de Gestión de Candidatos</h1>
+            <p class="subtitle">Administración integral de recursos humanos</p>
+        </header>
+
+        <main>
+            <!-- Columna izquierda: Formulario y Filtros -->
+            <div class="left-column">
+                <!-- Panel de filtros -->
+                <section class="filters-section">
+                    <h2>Filtros de Búsqueda</h2>
+                <div class="filters-container">
+                    <div class="filter-row">
+                        <div class="filter-group medium">
+                            <label for="filterSexo">Sexo:</label>
+                            <select id="filterSexo">
+                                <option value="">Todos</option>
+                                <option value="M">Masculino</option>
+                                <option value="F">Femenino</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group small">
+                            <label for="filterEdad">Edad:</label>
+                            <input type="number" id="filterEdad" min="16" max="80" placeholder="Edad específica">
+                        </div>
+
+                        <div class="filter-group medium">
+                            <label for="filterEstatus">Estatus:</label>
+                            <select id="filterEstatus">
+                                <option value="">Todos</option>
+                                <option value="ASIGNADO">Asignado</option>
+                                <option value="NO ELEGIBLE">No Elegible</option>
+                                <option value="ELEGIBLE">Elegible</option>
+                                <option value="RENUNCIA">Renuncia</option>
+                                <option value="NO ASISTIO">No Asistió</option>
+                                <option value="A CONSIDERAR">A Considerar</option>
+                                <option value="NO INTERESADO">No Interesado</option>
+                                <option value="NO CONTESTA">No Contesta</option>
+                                <option value="RECHAZADO">Rechazado</option>
+                                <option value="Nuevo">Nuevo</option>
+                                <option value="En proceso">En Proceso</option>
+                                <option value="Entrevistado">Entrevistado</option>
+                                <option value="Contratado">Contratado</option>
+                                <option value="Descartado">Descartado</option>
+                                <option value="En espera">En Espera</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-row">
+                        <div class="filter-group large">
+                            <label for="filterUbicacion">Ubicación:</label>
+                            <select id="filterUbicacion">
+                                <option value="">Todas</option>
+                                <option value="Caracas">Caracas</option>
+                                <option value="Los Teques (Altos Mirandinos)">Los Teques (Altos Mirandinos)</option>
+                                <option value="Valles del Tuy">Valles del Tuy</option>
+                                <option value="Barlovento">Barlovento</option>
+                                <option value="Guarenas-Guatire">Guarenas-Guatire</option>
+                                <option value="La Guaira (Litoral Central)">La Guaira (Litoral Central)</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group large">
+                            <label for="filterZona">Zona de Residencia:</label>
+                            <select id="filterZona">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group extra-large">
+                            <label for="filterArea">Área de Interés:</label>
+                            <select id="filterArea">
+                                <option value="">Todas</option>
+                                <option value="OPERARIO DE MANTENIMIENTO">Operario de Mantenimiento</option>
+                                <option value="SERVICIOS GENERALES">Servicios Generales</option>
+                                <option value="ENCARGADA DE PDS">Encargada de PDS</option>
+                                <option value="OPERARIO DE MANTENIMIENTO / SERVICIOS GENERALES">Operario de Mantenimiento / Servicios Generales</option>
+                                <option value="Ventas">Ventas</option>
+                                <option value="Administración">Administración</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="filter-row">
+                        <div class="filter-group full-width">
+                            <label for="searchInput">Búsqueda General:</label>
+                            <input type="text" id="searchInput" placeholder="Buscar por nombre, cédula o teléfono...">
+                        </div>
+                    </div>
+
+                    <div class="filter-actions">
+                        <button id="applyFilters" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <path d="m21 21-4.35-4.35"></path>
+                            </svg>
+                            Aplicar Filtros
+                        </button>
+                        <button id="clearFilters" class="btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                            </svg>
+                            Limpiar
+                        </button>
+                        <button id="refreshBtn" class="btn-secondary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <polyline points="1 20 1 14 7 14"></polyline>
+                                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+                            </svg>
+                            Actualizar
+                        </button>
+                    </div>
+                </div>
+                </section>
+
+                <!-- Formulario para agregar/editar candidatos -->
+                <section class="form-section">
+                    <h2 id="formTitle">Agregar Nuevo Candidato</h2>
+                <form id="candidatoForm">
+                    <!-- Información Personal -->
+                    <div class="form-section-group">
+                        <h3>Información Personal</h3>
+                        <div class="form-row">
+                            <div class="form-group extra-large">
+                                <label for="nombres_apellidos">Nombres y Apellidos *:</label>
+                                <input type="text" id="nombres_apellidos" name="nombres_apellidos" required>
+                            </div>
+
+                            <div class="form-group medium">
+                                <label for="cedula">Cédula *:</label>
+                                <input type="text" id="cedula" name="cedula" required>
+                            </div>
+
+                            <div class="form-group medium">
+                                <label for="sexo">Sexo *:</label>
+                                <select id="sexo" name="sexo" required>
+                                    <option value="">Seleccionar</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group small">
+                                <label for="edad">Edad *:</label>
+                                <input type="number" id="edad" name="edad" min="16" max="80" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Contacto -->
+                    <div class="form-section-group">
+                        <h3>Información de Contacto</h3>
+                        <div class="form-row">
+                            <div class="form-group large">
+                                <label for="canal_recepcion">Canal de Recepción *:</label>
+                                <select id="canal_recepcion" name="canal_recepcion" required>
+                                    <option value="">Seleccionar</option>
+                                    <option value="LLAMADA">Llamada</option>
+                                    <option value="ENTREGA CV PRESENCIAL">Entrega CV Presencial</option>
+                                    <option value="WHATSAPP">WhatsApp</option>
+                                    <option value="Portal Web">Portal Web</option>
+                                    <option value="Referido">Referido</option>
+                                    <option value="Redes Sociales">Redes Sociales</option>
+                                    <option value="Bolsa de Empleo">Bolsa de Empleo</option>
+                                    <option value="Llamada Directa">Llamada Directa</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group medium">
+                                <label for="fuente">Fuente:</label>
+                                <select id="fuente" name="fuente">
+                                    <option value="">Seleccionar</option>
+                                    <option value="REFERIDO">Referido</option>
+                                    <option value="PORTAL DE EMPLEO">Portal de Empleo</option>
+                                    <option value="VOLANTEO">Volanteo</option>
+                                    <option value="CONOCIDO">Conocido</option>
+                                    <option value="EX TRABAJADOR">Ex Trabajador</option>
+                                    <option value="INSTAGRAM">Instagram</option>
+                                    <option value="FACEBOOK">Facebook</option>
+                                    <option value="TELEGRAM">Telegram</option>
+                                    <option value="WHATSAPP">WhatsApp</option>
+                                    <option value="LinkedIn">LinkedIn</option>
+                                    <option value="Otros">Otros</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="referido">Referido por:</label>
+                                <input type="text" id="referido" name="referido" placeholder="Nombre del referente">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group large">
+                                <label for="tipo_contacto">Tipo de Contacto *:</label>
+                                <select id="tipo_contacto" name="tipo_contacto" required>
+                                    <option value="">Seleccionar</option>
+                                    <option value="ENTREVISTA">Entrevista</option>
+                                    <option value="ENTREVISTA TELEFONICA">Entrevista Telefónica</option>
+                                    <option value="Llamada">Llamada</option>
+                                    <option value="WhatsApp">WhatsApp</option>
+                                    <option value="Email">Email</option>
+                                    <option value="Presencial">Presencial</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group medium">
+                                <label for="fecha_contacto">Fecha de Contacto *:</label>
+                                <input type="date" id="fecha_contacto" name="fecha_contacto" required>
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="telefonos">Teléfonos:</label>
+                                <input type="text" id="telefonos" name="telefonos" placeholder="+57 300 123 4567">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Entrevista -->
+                    <div class="form-section-group">
+                        <h3>Proceso de Entrevista</h3>
+                        <div class="form-row">
+                            <div class="form-group medium">
+                                <label for="citado_entrevista">Citado a Entrevista:</label>
+                                <select id="citado_entrevista" name="citado_entrevista">
+                                    <option value="">Seleccionar</option>
+                                    <option value="SI">Sí</option>
+                                    <option value="NO">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group medium">
+                                <label for="fecha_entrevista">Fecha de Entrevista:</label>
+                                <input type="date" id="fecha_entrevista" name="fecha_entrevista">
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="entrevistador_telefonico">Entrevistador Telefónico:</label>
+                                <input type="text" id="entrevistador_telefonico" name="entrevistador_telefonico">
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="entrevistador_presencial">Entrevistador Presencial:</label>
+                                <input type="text" id="entrevistador_presencial" name="entrevistador_presencial">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group medium">
+                                <label for="solicitud_empleo">Solicitud de Empleo:</label>
+                                <select id="solicitud_empleo" name="solicitud_empleo">
+                                    <option value="">Seleccionar</option>
+                                    <option value="SI">Sí</option>
+                                    <option value="NO">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group medium">
+                                <label for="guia_entrevista">Guía de Entrevista:</label>
+                                <select id="guia_entrevista" name="guia_entrevista">
+                                    <option value="">Seleccionar</option>
+                                    <option value="SI">Sí</option>
+                                    <option value="NO">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Ubicación -->
+                    <div class="form-section-group">
+                        <h3>Información de Ubicación</h3>
+                        <div class="form-row">
+                            <div class="form-group large">
+                                <label for="ubicacion">Ubicación:</label>
+                                <select id="ubicacion" name="ubicacion">
+                                    <option value="">Seleccionar</option>
+                                    <option value="Caracas">Caracas</option>
+                                    <option value="Los Teques (Altos Mirandinos)">Los Teques (Altos Mirandinos)</option>
+                                    <option value="Valles del Tuy">Valles del Tuy</option>
+                                    <option value="Barlovento">Barlovento</option>
+                                    <option value="Guarenas-Guatire">Guarenas-Guatire</option>
+                                    <option value="La Guaira (Litoral Central)">La Guaira (Litoral Central)</option>
+                                    <option value="Valencia">Valencia</option>
+                                    <option value="Puerto Cabello">Puerto Cabello</option>
+                                    <option value="Maracay">Maracay</option>
+                                    <option value="Colonia Tovar">Colonia Tovar</option>
+                                    <option value="San Juan de los Morros">San Juan de los Morros</option>
+                                    <option value="Calabozo">Calabozo</option>
+                                    <option value="Valle de la Pascua">Valle de la Pascua</option>
+                                    <option value="San Carlos">San Carlos</option>
+                                    <option value="Tinaquillo">Tinaquillo</option>
+                                    <option value="Barquisimeto">Barquisimeto</option>
+                                    <option value="Carora">Carora</option>
+                                    <option value="El Tocuyo">El Tocuyo</option>
+                                    <option value="San Felipe">San Felipe</option>
+                                    <option value="Chivacoa (Montaña de Sorte)">Chivacoa (Montaña de Sorte)</option>
+                                    <option value="Coro">Coro</option>
+                                    <option value="Península de Paraguaná (Punto Fijo)">Península de Paraguaná (Punto Fijo)</option>
+                                    <option value="Sierra de San Luis">Sierra de San Luis</option>
+                                    <option value="Maracaibo">Maracaibo</option>
+                                    <option value="Costa Oriental del Lago">Costa Oriental del Lago</option>
+                                    <option value="Sur del Lago">Sur del Lago</option>
+                                    <option value="Península de la Guajira">Península de la Guajira</option>
+                                    <option value="Mérida (ciudad y páramos)">Mérida (ciudad y páramos)</option>
+                                    <option value="El Vigía">El Vigía</option>
+                                    <option value="San Cristóbal">San Cristóbal</option>
+                                    <option value="La Grita">La Grita</option>
+                                    <option value="Zona Norte del Táchira">Zona Norte del Táchira</option>
+                                    <option value="Trujillo (ciudad)">Trujillo (ciudad)</option>
+                                    <option value="Valera">Valera</option>
+                                    <option value="Boconó">Boconó</option>
+                                    <option value="Guanare">Guanare</option>
+                                    <option value="Acarigua-Araure">Acarigua-Araure</option>
+                                    <option value="Barinas (ciudad)">Barinas (ciudad)</option>
+                                    <option value="Llanos Occidentales (Pedraza, Socopó)">Llanos Occidentales (Pedraza, Socopó)</option>
+                                    <option value="San Fernando de Apure">San Fernando de Apure</option>
+                                    <option value="El Amparo">El Amparo</option>
+                                    <option value="Barcelona">Barcelona</option>
+                                    <option value="Puerto La Cruz">Puerto La Cruz</option>
+                                    <option value="El Tigre">El Tigre</option>
+                                    <option value="Faja Petrolífera del Orinoco">Faja Petrolífera del Orinoco</option>
+                                    <option value="Cumaná">Cumaná</option>
+                                    <option value="Península de Araya">Península de Araya</option>
+                                    <option value="Península de Paria (Carúpano, Güiria)">Península de Paria (Carúpano, Güiria)</option>
+                                    <option value="Maturín">Maturín</option>
+                                    <option value="Caripe (Cueva del Guácharo)">Caripe (Cueva del Guácharo)</option>
+                                    <option value="Isla de Margarita (Porlamar, Pampatar, La Asunción)">Isla de Margarita (Porlamar, Pampatar, La Asunción)</option>
+                                    <option value="Isla de Coche">Isla de Coche</option>
+                                    <option value="Isla de Cubagua">Isla de Cubagua</option>
+                                    <option value="Tucupita">Tucupita</option>
+                                    <option value="Delta del Orinoco">Delta del Orinoco</option>
+                                    <option value="Ciudad Bolívar">Ciudad Bolívar</option>
+                                    <option value="Ciudad Guayana (Puerto Ordaz, San Félix)">Ciudad Guayana (Puerto Ordaz, San Félix)</option>
+                                    <option value="Gran Sabana (Santa Elena de Uairén)">Gran Sabana (Santa Elena de Uairén)</option>
+                                    <option value="Canaima (Salto Ángel)">Canaima (Salto Ángel)</option>
+                                    <option value="El Callao (zona minera)">El Callao (zona minera)</option>
+                                    <option value="Puerto Ayacucho">Puerto Ayacucho</option>
+                                    <option value="Selva Amazónica Venezolana">Selva Amazónica Venezolana</option>
+                                    <option value="Archipiélago Los Roques">Archipiélago Los Roques</option>
+                                    <option value="Isla La Tortuga">Isla La Tortuga</option>
+                                    <option value="Isla La Orchila">Isla La Orchila</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="zona_reside">Zona que Reside:</label>
+                                <select id="zona_reside" name="zona_reside">
+                                    <option value="">Primero selecciona ubicación</option>
+                                </select>
+                                <input type="text" id="zona_otro" name="zona_otro" placeholder="Especificar zona" style="display: none; margin-top: 8px;">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="direccion">Dirección:</label>
+                                <textarea id="direccion" name="direccion" rows="2" placeholder="Dirección completa"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Profesional -->
+                    <div class="form-section-group">
+                        <h3>Información Profesional</h3>
+                        <div class="form-row">
+                            <div class="form-group extra-large">
+                                <label for="area_interes">Área de Interés:</label>
+                                <select id="area_interes" name="area_interes">
+                                    <option value="">Seleccionar</option>
+                                    <option value="OPERARIO DE MANTENIMIENTO">Operario de Mantenimiento</option>
+                                    <option value="SERVICIOS GENERALES">Servicios Generales</option>
+                                    <option value="ENCARGADA DE PDS">Encargada de PDS</option>
+                                    <option value="OPERARIO DE MANTENIMIENTO / SERVICIOS GENERALES">Operario de Mantenimiento / Servicios Generales</option>
+                                    <option value="Ventas">Ventas</option>
+                                    <option value="Administración">Administración</option>
+                                    <option value="Marketing">Marketing</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group medium">
+                                <label for="expectativa_salarial">Expectativa Salarial:</label>
+                                <input type="number" id="expectativa_salarial" name="expectativa_salarial" step="0.01" placeholder="2500000">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="experiencia">Experiencia:</label>
+                                <textarea id="experiencia" name="experiencia" rows="3" placeholder="Describe la experiencia laboral"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información Personal Adicional -->
+                    <div class="form-section-group">
+                        <h3>Información Personal Adicional</h3>
+                        <div class="form-row">
+                            <div class="form-group medium">
+                                <label for="num_hijos">Número de Hijos:</label>
+                                <input type="number" id="num_hijos" name="num_hijos" min="0" value="0">
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="cuenta_bancaria">Cuenta Bancaria:</label>
+                                <select id="cuenta_bancaria" name="cuenta_bancaria">
+                                    <option value="">Seleccionar</option>
+                                    <option value="SI">Sí</option>
+                                    <option value="NO">No</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="seguridad_bancaria">Seguridad Bancaria:</label>
+                                <select id="seguridad_bancaria" name="seguridad_bancaria">
+                                    <option value="">Seleccionar</option>
+                                    <option value="VERIFICADO">Verificado</option>
+                                    <option value="RECHAZADO">Rechazado</option>
+                                    <option value="SI">Sí</option>
+                                    <option value="NO">No</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de Seguimiento -->
+                    <div class="form-section-group">
+                        <h3>Seguimiento y Estatus</h3>
+                        <div class="form-row">
+                            <div class="form-group large">
+                                <label for="estatus">Estatus *:</label>
+                                <select id="estatus" name="estatus" required>
+                                    <option value="">Seleccionar</option>
+                                    <option value="ASIGNADO">Asignado</option>
+                                    <option value="NO ELEGIBLE">No Elegible</option>
+                                    <option value="ELEGIBLE">Elegible</option>
+                                    <option value="RENUNCIA">Renuncia</option>
+                                    <option value="NO ASISTIO">No Asistió</option>
+                                    <option value="A CONSIDERAR">A Considerar</option>
+                                    <option value="NO INTERESADO">No Interesado</option>
+                                    <option value="NO CONTESTA">No Contesta</option>
+                                    <option value="RECHAZADO">Rechazado</option>
+                                    <option value="Nuevo">Nuevo</option>
+                                    <option value="En proceso">En Proceso</option>
+                                    <option value="Entrevistado">Entrevistado</option>
+                                    <option value="Contratado">Contratado</option>
+                                    <option value="Descartado">Descartado</option>
+                                    <option value="En espera">En Espera</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group large">
+                                <label for="pds_asignado">PDS Asignado:</label>
+                                <input type="text" id="pds_asignado" name="pds_asignado" placeholder="Nombre del responsable">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="comentarios">Comentarios:</label>
+                                <textarea id="comentarios" name="comentarios" rows="3" placeholder="Observaciones adicionales"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" id="submitBtn" class="btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                <polyline points="17,21 17,13 7,13 7,21"></polyline>
+                                <polyline points="7,3 7,8 15,8"></polyline>
+                            </svg>
+                            Guardar Candidato
+                        </button>
+                        <button type="button" id="cancelBtn" class="btn-secondary" style="display: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+                </section>
+            </div>
+
+            <!-- Columna derecha: Resultados -->
+            <div class="right-column">
+                <section class="results-section">
+                    <h2>Lista de Candidatos</h2>
+                    <div id="loading" class="loading">Cargando candidatos...</div>
+                    <div id="candidatosList" class="candidatos-list"></div>
+                    <div id="noResults" class="no-results" style="display: none;">
+                        No se encontraron candidatos con los filtros aplicados.
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Modal para ver información completa -->
+        <div id="viewModal" class="modal">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3>Información Completa del Candidato</h3>
+                    <button id="closeViewModal" class="btn-close">✕</button>
+                </div>
+                <div id="candidatoDetails" class="modal-body">
+                    <!-- Aquí se cargará la información completa -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación -->
+        <div id="confirmModal" class="modal">
+            <div class="modal-content">
+                <h3>Confirmar Eliminación</h3>
+                <p>¿Estás seguro de que deseas eliminar este candidato? Esta acción no se puede deshacer.</p>
+                <div class="modal-buttons">
+                    <button id="confirmDelete" class="btn-delete">Eliminar</button>
+                    <button id="cancelDelete" class="btn-secondary">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notificaciones -->
+        <div id="notification" class="notification"></div>
+    </div>
+
+    <script src="script-candidatos.js"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+        // Registrar Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registrado con éxito:', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW falló al registrarse:', registrationError);
+                    });
+            });
+        }
+
+        // Detectar si la app puede ser instalada
+        let deferredPrompt;
+        const installButton = document.createElement('button');
+        installButton.textContent = '📱 Instalar App';
+        installButton.className = 'install-button';
+        installButton.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            z-index: 1000;
+            display: block;
+            transition: all 0.3s ease;
+        `;
+
+        // Botón de debug para testing
+        const debugButton = document.createElement('button');
+        debugButton.textContent = '🔧 Debug PWA';
+        debugButton.style.cssText = `
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            z-index: 1000;
+            font-size: 12px;
+        `;
+
+        debugButton.addEventListener('click', () => {
+            console.log('=== DEBUG PWA ===');
+            console.log('Service Worker soportado:', 'serviceWorker' in navigator);
+            console.log('deferredPrompt disponible:', !!deferredPrompt);
+            console.log('Manifest:', document.querySelector('link[rel="manifest"]'));
+
+            // Verificar si ya está instalada
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                alert('✅ La PWA ya está instalada!');
+            } else {
+                alert('❌ La PWA no está instalada aún');
+            }
+        });
+
+        document.body.appendChild(debugButton);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('🎉 beforeinstallprompt event fired!');
+            // Prevenir que Chrome 67 y anteriores muestren automáticamente el prompt
+            e.preventDefault();
+            // Guardar el evento para que pueda ser activado después
+            deferredPrompt = e;
+            // Cambiar el texto del botón para indicar que está listo
+            installButton.textContent = '📱 Instalar App (Listo)';
+            installButton.style.background = '#28a745';
+            document.body.appendChild(installButton);
+        });
+
+        // Agregar el botón inmediatamente para testing
+        document.body.appendChild(installButton);
+
+        installButton.addEventListener('click', (e) => {
+            console.log('🔘 Botón de instalación clickeado');
+
+            if (deferredPrompt) {
+                console.log('✅ deferredPrompt disponible, mostrando prompt...');
+                // Ocultar el botón
+                installButton.style.display = 'none';
+                // Mostrar el prompt de instalación
+                deferredPrompt.prompt();
+                // Esperar a que el usuario responda al prompt
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('✅ Usuario aceptó la instalación');
+                        alert('¡App instalada exitosamente!');
+                    } else {
+                        console.log('❌ Usuario rechazó la instalación');
+                        installButton.style.display = 'block';
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                console.log('❌ deferredPrompt no disponible');
+                alert('⚠️ La instalación no está disponible aún.\n\nPosibles causas:\n1. Ya está instalada\n2. No cumple criterios PWA\n3. Necesita HTTPS en producción\n\nRevisa la consola para más detalles.');
+            }
+        });
+
+        // Detectar cuando la app ha sido instalada
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('App instalada exitosamente');
+            installButton.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
