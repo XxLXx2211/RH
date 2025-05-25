@@ -1,0 +1,9 @@
+{
+  "name": "netlify-functions",
+  "version": "1.0.0",
+  "description": "Dependencies for Netlify Functions",
+  "main": "server.js",
+  "dependencies": {
+    "@libsql/client": "^0.15.7"
+  }
+}
