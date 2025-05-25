@@ -6,12 +6,15 @@ let dbInitialized = false;
 async function ensureDB() {
     if (!dbInitialized) {
         try {
+            console.log('Intentando conectar a la base de datos Turso...');
+            console.log('TURSO_DATABASE_URL:', process.env.TURSO_DATABASE_URL ? 'Configurada' : 'No configurada');
+            console.log('TURSO_AUTH_TOKEN:', process.env.TURSO_AUTH_TOKEN ? 'Configurado' : 'No configurado');
             db = createDatabase();
             console.log('🚀 Conectado a la base de datos Turso');
             dbInitialized = true;
         } catch (error) {
-            console.error('❌ Error inicializando base de datos Turso:', error);
-            throw error;
+            console.error('❌ Error inicializando base de datos Turso en ensureDB:', error);
+            throw error; // Re-lanzar el error para que la función Lambda falle
         }
     }
     return db;
