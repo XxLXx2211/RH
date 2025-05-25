@@ -4,6 +4,7 @@
   "description": "Dependencies for Netlify Functions",
   "main": "server.js",
   "dependencies": {
-    "@libsql/client": "^0.15.7"
+    "@libsql/client": "^0.15.7",
+    "libsql": "^0.1.0"
   }
 }
