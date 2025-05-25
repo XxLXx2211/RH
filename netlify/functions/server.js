@@ -1,8 +1,5 @@
 const { createDatabase, executeQuery, getOne, getAll } = require('./database-config');
 
-// Cargar variables de entorno
-require('dotenv').config();
-
 let db;
 let dbInitialized = false;
 
