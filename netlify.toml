@@ -3,7 +3,7 @@
   functions = "netlify/functions"
 
 [functions]
-  node_bundler = "esbuild" # Usar esbuild para un bundling más rápido
+  node_bundler = "zip" # Cambiar a zip para asegurar que las dependencias nativas se incluyan
 
 [build.environment]
   # Estas variables se inyectarán en las funciones de Netlify
