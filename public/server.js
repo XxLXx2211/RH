@@ -66,8 +66,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// Servir archivos estáticos desde public y raíz
-app.use(express.static('public', {
+// Servir archivos estáticos
+app.use(express.static('.', {
     setHeaders: (res, path) => {
         // Cache para iconos y recursos estáticos
         if (path.includes('/icons/') || path.endsWith('.css') || path.endsWith('.js')) {
@@ -76,18 +76,6 @@ app.use(express.static('public', {
         // Cache corto para HTML
         if (path.endsWith('.html')) {
             res.setHeader('Cache-Control', 'public, max-age=3600'); // 1 hora
-        }
-    }
-}));
-
-// También servir desde la raíz para compatibilidad
-app.use(express.static('.', {
-    setHeaders: (res, path) => {
-        if (path.includes('/icons/') || path.endsWith('.css') || path.endsWith('.js')) {
-            res.setHeader('Cache-Control', 'public, max-age=31536000');
-        }
-        if (path.endsWith('.html')) {
-            res.setHeader('Cache-Control', 'public, max-age=3600');
         }
     }
 }));
