@@ -99,7 +99,7 @@ async function loadCandidatos(filters = {}) {
             }
         });
 
-        const url = `/api/candidatos${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
+        const url = `/.netlify/functions/server/api/candidatos${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
         const response = await fetch(url);
         const data = await response.json();
 
@@ -118,7 +118,7 @@ async function loadCandidatos(filters = {}) {
 
 async function saveCandidato(candidatoData) {
     try {
-        const url = editingId ? `/api/candidatos/${editingId}` : '/api/candidatos';
+        const url = editingId ? `/.netlify/functions/server/api/candidatos/${editingId}` : '/.netlify/functions/server/api/candidatos';
         const method = editingId ? 'PUT' : 'POST';
 
         const response = await fetch(url, {
@@ -145,7 +145,7 @@ async function saveCandidato(candidatoData) {
 
 async function deleteCandidato(id) {
     try {
-        const response = await fetch(`/api/candidatos/${id}`, {
+        const response = await fetch(`/.netlify/functions/server/api/candidatos/${id}`, {
             method: 'DELETE'
         });
 

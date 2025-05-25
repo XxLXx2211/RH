@@ -564,9 +564,10 @@
 
     <script src="script-candidatos.js"></script>
 
-    <!-- PWA Service Worker Registration -->
+    <!-- PWA Service Worker Registration - TEMPORALMENTE DESHABILITADO -->
     <script>
-        // Registrar Service Worker para PWA
+        // Registrar Service Worker para PWA - COMENTADO PARA DEBUGGING
+        /*
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
@@ -578,6 +579,8 @@
                     });
             });
         }
+        */
+        console.log('Service Worker registration disabled for debugging');
 
         // Detectar si la app puede ser instalada
         let deferredPrompt;

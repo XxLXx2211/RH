@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="384" height="384" viewBox="0 0 384 384" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Fondo -->
+  <rect width="384" height="384" fill="url(#grad)" rx="38.400000000000006"/>
+  
+  <!-- Iconos de personas -->
+  <g fill="white">
+    <!-- Persona 1 -->
+    <circle cx="96" cy="115.19999999999999" r="30.72"/>
+    <rect x="71.424" y="130.56" width="49.152" height="61.44" rx="7.68"/>
+    
+    <!-- Persona 2 -->
+    <circle cx="288" cy="115.19999999999999" r="30.72"/>
+    <rect x="263.42400000000004" y="130.56" width="49.152" height="61.44" rx="7.68"/>
+    
+    <!-- Texto CV -->
+    <text x="192" y="288" font-family="Arial, sans-serif" font-size="57.599999999999994" font-weight="bold" text-anchor="middle" fill="white">CV</text>
+    
+    <!-- Líneas decorativas -->
+    <line x1="76.80000000000001" y1="326.4" x2="307.20000000000005" y2="326.4" stroke="rgba(255,255,255,0.3)" stroke-width="3.84"/>
+    <line x1="76.80000000000001" y1="341.76" x2="307.20000000000005" y2="341.76" stroke="rgba(255,255,255,0.3)" stroke-width="3.84"/>
+    <line x1="76.80000000000001" y1="357.12" x2="307.20000000000005" y2="357.12" stroke="rgba(255,255,255,0.3)" stroke-width="3.84"/>
+  </g>
+</svg>

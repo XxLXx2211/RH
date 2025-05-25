@@ -1,0 +1,21 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild" # Usar esbuild para un bundling más rápido
+
+[build.environment]
+  # Estas variables se inyectarán en las funciones de Netlify
+  TURSO_DATABASE_URL = "libsql://candidatos-db-xxlxx2211.aws-us-east-1.turso.io"
+  TURSO_AUTH_TOKEN = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NDgxMzc2MDksImlkIjoiYzFkMTM3NDYtYzBjMy00MWY2LTk3MGUtMzY3MzkyNzM2YzlkIiwicmlkIjoiMzMzNjUwNmMtMTc3OS00OGI4LTlkY2ItNmU2MjMyNGI0MmEzIn0.MpikLdkXssb12bf19iTs_Z_r9fxZl8PNb1SdMzd0GVzp7LiLfOlw9IWKKfdHttaMGlvdr5lYq6mfD_b7J1W1Cg"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/server/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
