@@ -3,7 +3,7 @@
   functions = "netlify/functions"
 
 [functions]
-  node_bundler = "zip" # Cambiar a zip para asegurar que las dependencias nativas se incluyan
+  node_bundler = "nft" # Cambiar a nft para un mejor manejo de dependencias nativas
 
 [build.environment]
   # Estas variables se inyectarán en las funciones de Netlify
