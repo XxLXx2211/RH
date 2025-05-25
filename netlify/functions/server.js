@@ -30,7 +30,9 @@ function handlerResponse(statusCode, body) {
             'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
             'Access-Control-Allow-Headers': 'Content-Type',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(body, (key, value) =>
+            typeof value === 'bigint' ? value.toString() : value
+        ),
     };
 }
 
