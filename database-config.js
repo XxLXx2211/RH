@@ -15,7 +15,7 @@ function createDatabase() {
             }
         });
     }
-    
+
     // En producción usar Turso
     if (!process.env.TURSO_DATABASE_URL || !process.env.TURSO_AUTH_TOKEN) {
         console.error('❌ Variables de entorno de Turso no configuradas');
@@ -47,9 +47,9 @@ async function executeQuery(db, sql, params = []) {
             } else {
                 db.run(sql, params, function(err) {
                     if (err) reject(err);
-                    else resolve({ 
+                    else resolve({
                         lastInsertRowid: this.lastID,
-                        changes: this.changes 
+                        changes: this.changes
                     });
                 });
             }
@@ -106,40 +106,32 @@ async function getAll(db, sql, params = []) {
 
 // Función para inicializar la base de datos
 async function initializeDatabase(db) {
-    const sqlScript = fs.readFileSync('./database.sql', 'utf8');
-    
-    if (process.env.NODE_ENV !== 'production') {
-        // SQLite local
-        return new Promise((resolve, reject) => {
-            db.exec(sqlScript, (err) => {
-                if (err) {
-                    console.error('Error al ejecutar el script SQL:', err.message);
-                    reject(err);
-                } else {
-                    console.log('✅ Base de datos local inicializada correctamente.');
-                    resolve();
-                }
-            });
-        });
-    } else {
-        // Turso - ejecutar comandos uno por uno
-        const statements = sqlScript
-            .split(';')
-            .map(stmt => stmt.trim())
-            .filter(stmt => stmt.length > 0);
-
-        for (const statement of statements) {
-            try {
-                await db.execute(statement);
-            } catch (error) {
-                // Ignorar errores de "table already exists"
-                if (!error.message.includes('already exists')) {
-                    console.error('Error ejecutando:', statement, error);
-                }
-            }
-        }
-        console.log('✅ Base de datos Turso inicializada correctamente.');
+    // En producción (Turso), no necesitamos inicializar nada
+    if (process.env.NODE_ENV === 'production') {
+        console.log('✅ Turso ya está configurado, no se requiere inicialización.');
+        return;
     }
+
+    // Solo en desarrollo necesitamos el archivo database.sql
+    if (!fs.existsSync('./database.sql')) {
+        console.log('⚠️ Archivo database.sql no encontrado, saltando inicialización.');
+        return;
+    }
+
+    const sqlScript = fs.readFileSync('./database.sql', 'utf8');
+
+    // SQLite local
+    return new Promise((resolve, reject) => {
+        db.exec(sqlScript, (err) => {
+            if (err) {
+                console.error('Error al ejecutar el script SQL:', err.message);
+                reject(err);
+            } else {
+                console.log('✅ Base de datos local inicializada correctamente.');
+                resolve();
+            }
+        });
+    });
 }
 
 module.exports = {

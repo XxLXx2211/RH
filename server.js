@@ -18,21 +18,30 @@ const {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Inicializar base de datos
+// Inicializar base de datos (compatible con serverless)
 let db;
-async function initDB() {
-    try {
-        db = createDatabase();
-        await initializeDatabase(db);
-        console.log('🚀 Base de datos lista');
-    } catch (error) {
-        console.error('❌ Error inicializando base de datos:', error);
-        process.exit(1);
-    }
-}
+let dbInitialized = false;
 
-// Inicializar DB al arrancar
-initDB();
+async function ensureDB() {
+    if (!dbInitialized) {
+        try {
+            db = createDatabase();
+            console.log('🚀 Conectado a la base de datos');
+
+            // Solo inicializar esquema en desarrollo
+            if (process.env.NODE_ENV !== 'production') {
+                await initializeDatabase(db);
+                console.log('🚀 Base de datos local inicializada');
+            }
+
+            dbInitialized = true;
+        } catch (error) {
+            console.error('❌ Error inicializando base de datos:', error);
+            throw error;
+        }
+    }
+    return db;
+}
 
 // Middleware
 app.use(cors());
@@ -78,6 +87,7 @@ app.use(express.static('.', {
 // Obtener todos los candidatos con filtros
 app.get('/api/candidatos', async (req, res) => {
     try {
+        const database = await ensureDB();
         let sql = 'SELECT * FROM candidatos WHERE 1=1';
         let params = [];
 
@@ -110,7 +120,7 @@ app.get('/api/candidatos', async (req, res) => {
 
         sql += ' ORDER BY fecha_registro DESC';
 
-        const rows = await getAll(db, sql, params);
+        const rows = await getAll(database, sql, params);
         res.json({ candidatos: rows });
     } catch (error) {
         console.error('Error obteniendo candidatos:', error);
@@ -119,71 +129,75 @@ app.get('/api/candidatos', async (req, res) => {
 });
 
 // Obtener un candidato por ID
-app.get('/api/candidatos/:id', (req, res) => {
-    const sql = 'SELECT * FROM candidatos WHERE id = ?';
-    db.get(sql, [req.params.id], (err, row) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
+app.get('/api/candidatos/:id', async (req, res) => {
+    try {
+        const database = await ensureDB();
+        const sql = 'SELECT * FROM candidatos WHERE id = ?';
+        const row = await getOne(database, sql, [req.params.id]);
+
         if (row) {
             res.json({ candidato: row });
         } else {
             res.status(404).json({ error: 'Candidato no encontrado' });
         }
-    });
+    } catch (error) {
+        console.error('Error obteniendo candidato:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // Crear nuevo candidato
-app.post('/api/candidatos', (req, res) => {
-    const {
-        nombres_apellidos, cedula, sexo, edad, canal_recepcion, fuente, referido,
-        tipo_contacto, fecha_contacto, citado_entrevista, fecha_entrevista,
-        entrevistador_telefonico, entrevistador_presencial, solicitud_empleo,
-        guia_entrevista, ubicacion, zona_reside, direccion, telefonos, experiencia,
-        num_hijos, area_interes, cuenta_bancaria, expectativa_salarial, estatus,
-        seguridad_bancaria, pds_asignado, comentarios
-    } = req.body;
+app.post('/api/candidatos', async (req, res) => {
+    try {
+        const database = await ensureDB();
+        const {
+            nombres_apellidos, cedula, sexo, edad, canal_recepcion, fuente, referido,
+            tipo_contacto, fecha_contacto, citado_entrevista, fecha_entrevista,
+            entrevistador_telefonico, entrevistador_presencial, solicitud_empleo,
+            guia_entrevista, ubicacion, zona_reside, direccion, telefonos, experiencia,
+            num_hijos, area_interes, cuenta_bancaria, expectativa_salarial, estatus,
+            seguridad_bancaria, pds_asignado, comentarios
+        } = req.body;
 
-    // Validaciones básicas
-    if (!nombres_apellidos || !cedula || !sexo || !edad || !canal_recepcion || !tipo_contacto || !fecha_contacto || !estatus) {
-        return res.status(400).json({ error: 'Los campos obligatorios son: nombres_apellidos, cedula, sexo, edad, canal_recepcion, tipo_contacto, fecha_contacto, estatus' });
-    }
-
-    if (edad < 16 || edad > 80) {
-        return res.status(400).json({ error: 'La edad debe estar entre 16 y 80 años' });
-    }
-
-    const sql = `INSERT INTO candidatos (
-        nombres_apellidos, cedula, sexo, edad, canal_recepcion, fuente, referido,
-        tipo_contacto, fecha_contacto, citado_entrevista, fecha_entrevista,
-        entrevistador_telefonico, entrevistador_presencial, solicitud_empleo,
-        guia_entrevista, ubicacion, zona_reside, direccion, telefonos, experiencia,
-        num_hijos, area_interes, cuenta_bancaria, expectativa_salarial, estatus,
-        seguridad_bancaria, pds_asignado, comentarios
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-    db.run(sql, [
-        nombres_apellidos, cedula, sexo, edad, canal_recepcion, fuente, referido,
-        tipo_contacto, fecha_contacto, citado_entrevista, fecha_entrevista,
-        entrevistador_telefonico, entrevistador_presencial, solicitud_empleo,
-        guia_entrevista, ubicacion, zona_reside, direccion, telefonos, experiencia,
-        num_hijos || 0, area_interes, cuenta_bancaria, expectativa_salarial, estatus,
-        seguridad_bancaria, pds_asignado, comentarios
-    ], function(err) {
-        if (err) {
-            if (err.message.includes('UNIQUE constraint failed')) {
-                res.status(400).json({ error: 'La cédula ya existe en la base de datos' });
-            } else {
-                res.status(500).json({ error: err.message });
-            }
-            return;
+        // Validaciones básicas
+        if (!nombres_apellidos || !cedula || !sexo || !edad || !canal_recepcion || !tipo_contacto || !fecha_contacto || !estatus) {
+            return res.status(400).json({ error: 'Los campos obligatorios son: nombres_apellidos, cedula, sexo, edad, canal_recepcion, tipo_contacto, fecha_contacto, estatus' });
         }
+
+        if (edad < 16 || edad > 80) {
+            return res.status(400).json({ error: 'La edad debe estar entre 16 y 80 años' });
+        }
+
+        const sql = `INSERT INTO candidatos (
+            nombres_apellidos, cedula, sexo, edad, canal_recepcion, fuente, referido,
+            tipo_contacto, fecha_contacto, citado_entrevista, fecha_entrevista,
+            entrevistador_telefonico, entrevistador_presencial, solicitud_empleo,
+            guia_entrevista, ubicacion, zona_reside, direccion, telefonos, experiencia,
+            num_hijos, area_interes, cuenta_bancaria, expectativa_salarial, estatus,
+            seguridad_bancaria, pds_asignado, comentarios
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+        const result = await executeQuery(database, sql, [
+            nombres_apellidos, cedula, sexo, edad, canal_recepcion, fuente, referido,
+            tipo_contacto, fecha_contacto, citado_entrevista, fecha_entrevista,
+            entrevistador_telefonico, entrevistador_presencial, solicitud_empleo,
+            guia_entrevista, ubicacion, zona_reside, direccion, telefonos, experiencia,
+            num_hijos || 0, area_interes, cuenta_bancaria, expectativa_salarial, estatus,
+            seguridad_bancaria, pds_asignado, comentarios
+        ]);
+
         res.json({
             message: 'Candidato creado exitosamente',
-            id: this.lastID
+            id: result.lastInsertRowid || result.meta?.last_insert_rowid
         });
-    });
+    } catch (error) {
+        console.error('Error creando candidato:', error);
+        if (error.message.includes('UNIQUE constraint failed') || error.message.includes('UNIQUE')) {
+            res.status(400).json({ error: 'La cédula ya existe en la base de datos' });
+        } else {
+            res.status(500).json({ error: error.message });
+        }
+    }
 });
 
 // Actualizar candidato
@@ -253,18 +267,27 @@ app.get('/candidatos', (req, res) => {
     res.sendFile(path.join(__dirname, 'index-candidatos.html'));
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-    console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-});
-
-// Cerrar base de datos al terminar la aplicación
-process.on('SIGINT', () => {
-    db.close((err) => {
-        if (err) {
-            console.error(err.message);
-        }
-        console.log('Conexión a la base de datos cerrada.');
-        process.exit(0);
+// Iniciar servidor (solo en desarrollo)
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
     });
-});
+
+    // Cerrar base de datos al terminar la aplicación (solo en desarrollo)
+    process.on('SIGINT', () => {
+        if (db && db.close) {
+            db.close((err) => {
+                if (err) {
+                    console.error(err.message);
+                }
+                console.log('Conexión a la base de datos cerrada.');
+                process.exit(0);
+            });
+        } else {
+            process.exit(0);
+        }
+    });
+}
+
+// Exportar para Vercel
+module.exports = app;
